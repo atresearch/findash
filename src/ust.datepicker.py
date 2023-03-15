@@ -60,6 +60,7 @@ app.layout = html.Div(children=[
         min_date_allowed=first_date,
         max_date_allowed=last_date,
         initial_visible_month=last_date,
+        disabled_days=rates.missing_dates(df),
         date=last_date
         )       
     ])
