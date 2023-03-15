@@ -1,0 +1,6 @@
+dailytreasuryrates==0.1.7
+dash==2.8.1
+pandas==1.5.3
+plotly==5.13.1
+python-dateutil==2.8.2
+QuantLib==1.29
