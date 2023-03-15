@@ -10,8 +10,8 @@ import pandas as pd
 
 fp = __file__
 fhead, ftail = os.path.split(fp)
-
-CSV_PATH = 'rates.csv'
+cd 
+CSV_PATH = 'data/rates.csv'
 init_date = '2023-03-09'    # all yields there, works fine
 # reqdate = '1990-01-04'  # some yields missing, works fine
 # reqdate = '1990-01-06'  # Todo: FAILS BADLY: needs handler for missing/bad dates

@@ -9,43 +9,36 @@ from dash import Dash, dcc, html, Input, Output
 import os
 import plotly.express as px
 import pandas as pd
+from data import rates
 
 fp = __file__
 fhead, ftail = os.path.split(fp)
 
 CSV_PATH = 'rates.csv'
-init_date = '2023-03-09'    # all yields there, works fine
-# reqdate = '1990-01-04'  # some yields missing, works fine
-# reqdate = '1990-01-06'  # Todo: FAILS BADLY: needs handler for missing/bad dates
-UST_YEARS = [30/365,60/365,90/365,120/365,182/365,1,2,3,5,7,10,20,30]
+
+# load the rates.csv data into a dataframe
+df = rates.load_rates(CSV_PATH)
+
+# get the first and last date in the rates file
+first_date = df.index[0].strftime('%Y-%m-%d')
+last_date = df.index[-1].strftime('%Y-%m-%d')
 
 app = Dash(__name__)
 
-df = pd.read_csv(CSV_PATH,parse_dates=["Date"]).set_index("Date")
 print(df)
 
 def build_df(reqdate):
-    df2 = df.loc[reqdate]
-    #if(df2.empty == True):
-    #    sys.exit("No data for requested date")    
-    RAW_YIELDS = df2.values.tolist()   # 13 element list containing yields(%)
-
-    # drop entries where yield is zero or missing
-    numcols = len(RAW_YIELDS) 
-    NEW_YEARS = []
-    NEW_YIELDS = []
-    for i in range(numcols):
-        if RAW_YIELDS[i] > 0:
-            NEW_YEARS.append(UST_YEARS[i])
-            NEW_YIELDS.append(RAW_YIELDS[i])
-    print("final data has len=",len(NEW_YIELDS))
-
-    d = {'YEARS':NEW_YEARS,'YIELD':NEW_YIELDS}
+    df2 = df.loc[reqdate].dropna()
+ 
+    d = {
+        'YEARS': [rates.tenor_name_to_year(tenor_name) for tenor_name in df2.keys()],
+        'YIELD':df2.values
+    }
     df_test = pd.DataFrame(d)
     print(df_test)
     return df_test
 
-df_current = build_df(init_date)
+df_current = build_df(last_date)
 fig = px.line(df_current, x="YEARS", y="YIELD", markers=True)
 fig.update_traces(marker=dict(size=12,color='Red'))
 
@@ -64,10 +57,10 @@ app.layout = html.Div(children=[
         html.Label('Choose a date: '),
         dcc.DatePickerSingle(
         id='date-picker-single',
-        min_date_allowed=date(1990, 1, 4),
-        max_date_allowed=date(2023, 3, 9),
-        initial_visible_month=date(2023, 3, 9),
-        date=date(2023, 3, 9)
+        min_date_allowed=first_date,
+        max_date_allowed=last_date,
+        initial_visible_month=last_date,
+        date=last_date
         )       
     ])
 ])
