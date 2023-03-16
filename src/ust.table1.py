@@ -6,8 +6,6 @@ import pandas as pd
 from dash import dash_table as dtab
 from data import rates 
 
-# bug? can't display earlier than 2022-10-19?
-
 fp = __file__
 fhead, ftail = os.path.split(fp)
 
@@ -30,7 +28,7 @@ init_date = init_date_raw.strftime('%Y-%m-%d')
 app = Dash(__name__)
 
 def build_df(reqdate):
-    df2 = df.loc[reqdate:last_date].dropna()    
+    df2 = df.loc[reqdate:last_date]    
     df3 = pd.DataFrame(df2)
     df_table_out = df3.reset_index()  # move Dates from index into col 1
     df_table_out['Date'] = df_table_out['Date'].dt.date # delete times in Date column
@@ -44,7 +42,16 @@ selected_df = df_tmp.to_dict('records')  # the dash table component uses this fo
 app.layout = html.Div(children=[
     html.H1(children='Testing Dash: tables'),
     
-    html.H2(children='file = '+ ftail),   
+    html.H2(children='file = '+ ftail),       
+    
+    # Table    
+    html.Div([
+        dtab.DataTable(
+            id='data-table',
+            data = selected_df, 
+            columns = [{"name": i, "id": i} for i in column_list],
+            page_size = 10
+            )], style={'width': '49%'}),
     
     html.Div(children=[
         html.Label('Choose a different starting date: '),
@@ -56,16 +63,7 @@ app.layout = html.Div(children=[
         disabled_days=rates.missing_dates(df),
         date=init_date
         )       
-    ]),     
-    
-    # Table    
-    html.Div([
-        dtab.DataTable(
-            id='data-table',
-            data = selected_df, 
-            columns = [{"name": i, "id": i} for i in column_list],
-            page_size = 10
-            )], style={'width': '49%'})   
+    ])     
     
 ])
 
