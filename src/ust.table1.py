@@ -6,6 +6,8 @@ import pandas as pd
 from dash import dash_table as dtab
 from data import rates 
 
+# bug? can't display earlier than 2022-10-19?
+
 fp = __file__
 fhead, ftail = os.path.split(fp)
 
@@ -61,7 +63,8 @@ app.layout = html.Div(children=[
         dtab.DataTable(
             id='data-table',
             data = selected_df, 
-            columns = [{"name": i, "id": i} for i in column_list]
+            columns = [{"name": i, "id": i} for i in column_list],
+            page_size = 10
             )], style={'width': '49%'})   
     
 ])
