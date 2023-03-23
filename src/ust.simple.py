@@ -2,7 +2,8 @@
 # visit http://localhost:8050/ in your web browser
 # or visit http://127.0.0.1:8050/ in your web browser.
 
-# tests datepicker; needs to catch 'callback errors' on non-market dates
+# History:
+# 3/22/2023:  alan corrected index bug in build_complete_spot_rates: [n]->[n+1]
 
 from datetime import date
 from dash import Dash, dcc, html, Input, Output
@@ -73,13 +74,14 @@ def build_complete_spot_rates(current_complete_par_rates):
     disc_factors = [0 for i in range(LEN)]
     disc_factors[0] = 1/(1 + 0.5*0.01*current_complete_par_rates[0])
     for n in range(LEN-1):
-        lst = [0.5*0.01*current_complete_par_rates[n]*disc_factors[i] for i in range(n+1)]
-        disc_factors[n+1] = (1 - sum(lst)) /(1 + 0.5*0.01*current_complete_par_rates[n])
- 
+        lst = [0.5*0.01*current_complete_par_rates[n+1]*disc_factors[i] for i in range(n+1)]
+        disc_factors[n+1] = (1 - sum(lst)) /(1 + 0.5*0.01*current_complete_par_rates[n+1])        
+    
     # create the complete set of spot rates from the complete set of discount factors 
     simple_spot_rates = [0 for i in range(LEN)]
     for n in range(LEN):
-        simple_spot_rates[n] = 2*100*(np.power(disc_factors[n],-1/(n+1)) - 1)
+        simple_spot_rates[n] = 2*100*(np.power(disc_factors[n],-1/(n+1)) - 1)        
+     
     
     return simple_spot_rates    
      
