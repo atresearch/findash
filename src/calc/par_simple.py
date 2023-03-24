@@ -72,10 +72,10 @@ def treasury_par_to_spot_curve_simple(tenors, par_rates):
     
 
     
-    # First count the nr tenors <= 6m
+    # First count the nr tenors < 6m
     num_tenors_le_6m = sum(1 for t in tenors if t < 6)
 
-    # Select the tenors & par-rates <=6m
+    # Select the tenors & par-rates < 6m
     short_tenors = tenors[0:num_tenors_le_6m]
     short_par_rates = par_rates[0:num_tenors_le_6m]
 
@@ -105,6 +105,6 @@ def treasury_par_to_spot_curve_simple(tenors, par_rates):
     new_tenors = np.concatenate([short_tenors, coupon_tenors])
     new_rates = np.concatenate([short_spot_rates, coupon_spot_rates])
 
-    # Return amonly resolution spot rate
+    # Return a monthly-resolution spot rate
     return np.interp(range(0, 361), new_tenors, new_rates)
 
