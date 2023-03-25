@@ -1,7 +1,7 @@
 import numpy as np
 from scipy import interpolate
 from scipy.optimize import minimize
-
+from calc.util import cont_to_biannual
 
 def price_par_bonds_spline(spot_curve, tenors, par_rates, debug=False):
     # price all the bond
@@ -75,5 +75,5 @@ def treasury_par_to_spot_curve_spline(tenors, par_rates):
     ans = minimize(spline_fit_error, spot_rates, (tenors, par_rates), tol=1E-3)
 
     spot_curve = interpolate.splrep(tenors, ans.x)
-    spot_rates = interpolate.splev(np.arange(361), spot_curve)
-    return spot_rates
+    #spot_rates = interpolate.splev(np.arange(361), spot_curve)
+    return spot_curve
