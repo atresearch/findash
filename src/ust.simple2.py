@@ -14,7 +14,8 @@ import os
 import plotly.express as px
 import pandas as pd
 from data import rates
-from calc.ratesOLD import par_curve_to_spot
+# from calc.ratesOLD import par_curve_to_spot
+from calc.rates import par_curve_to_spot
 import numpy as np
 
 fp = __file__
@@ -132,7 +133,7 @@ def par_rates_to_DF_full(par_rates):
     len3 = 360
     DF_full_list = [1 for n in range(len3)]
     for n in range(len1):
-        DF_short_list = par_rates_to_DF_short(par_rates)  # DF_start has length=len1
+        DF_short_list = par_rates_to_DF_short(par_rates)  # DF_short_list has length=len1
         DF_cycle = par_rates_to_DF_semiannual(DF_short_list, n+1, par_rates)  # length=len2, the DF's for months n, n + 6, n + 12, ...
         for m in range(len2):
             DF_full_list[n + 6*m] = DF_cycle[m]   # insert the cycle DF's into the appropriate spot in the full list
@@ -204,7 +205,7 @@ par_rates = ust_to_par_rates(init_date)
 simple_spot_rates = par_rates_to_spot(par_rates)
     
 # format and prepare the SIMPLE-method spot rates for table display
-simple_spot_rates_formatted =  [ '%.2f' % elem for elem in simple_spot_rates ] 
+simple_spot_rates_formatted =  [ '%.4f' % elem for elem in simple_spot_rates ] 
 simple_spot_row = [init_date] + simple_spot_rates_formatted
 df_simple_spot = pd.DataFrame(columns=new_column_list)
 df_simple_spot.loc[0] = simple_spot_row
@@ -218,7 +219,7 @@ selected_simple_spot_df = df_simple_spot_display_new.to_dict('records')
 
 # call QL at the initial date
 t, r = par_curve_to_spot(init_date, par_tenors, par_yields, TENORS)
-r_formatted = [ '%.2f' % elem for elem in r ]
+r_formatted = [ '%.4f' % elem for elem in r ]
 full_spot_row = [last_date] + r_formatted
 df_spot = pd.DataFrame(columns=new_column_list)
 df_spot.loc[0] = full_spot_row
@@ -318,7 +319,7 @@ def update_figure_and_tables(selected_date):
     par_tenors = list(df_fig['MONTHS'])  
     par_yields = list(df_fig['YIELD'])
     t, r = par_curve_to_spot(selected_date, par_tenors, par_yields, TENORS)
-    r_formatted = [ '%.2f' % elem for elem in r ]
+    r_formatted = [ '%.4f' % elem for elem in r ]
     full_spot_row = [selected_date] + r_formatted
     df_spot = pd.DataFrame(columns=new_column_list)
     df_spot.loc[0] = full_spot_row
@@ -334,7 +335,7 @@ def update_figure_and_tables(selected_date):
     # see these same statements in the initializing table earlier for comments on what they do
     par_rates = ust_to_par_rates(selected_date)
     simple_spot_rates = par_rates_to_spot(par_rates)     
-    simple_spot_rates_formatted =  [ '%.2f' % elem for elem in simple_spot_rates ] 
+    simple_spot_rates_formatted =  [ '%.4f' % elem for elem in simple_spot_rates ] 
     simple_spot_row = [selected_date] + simple_spot_rates_formatted
     df_simple_spot = pd.DataFrame(columns=new_column_list)
     df_simple_spot.loc[0] = simple_spot_row
