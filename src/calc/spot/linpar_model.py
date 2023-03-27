@@ -28,7 +28,9 @@ class LinearParCurveModel(BaseSpotCurveModel):
             df_sum = np.sum(df[np.arange(tenor-6, 0, -6)])
             df[tenor] = (1 + accrued_interest - df_sum * coupon_cashflow) / (1 +coupon_cashflow)
 
-        self.spot = -np.log(df) / np.arange(361) * 12
+        t = np.arange(361) / 12
+        t[0] = 1 
+        self.spot = -np.log(df) / t
         self.spot[0] = self.spot[1]
     
     def spot_rates(self, tenors):
