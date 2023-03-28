@@ -29,7 +29,8 @@ df = rates.load_rates(CSV_PATH)
 # get the first and last date in the rates file
 first_date = df.index[0].strftime('%Y-%m-%d')
 last_date = df.index[-1].strftime('%Y-%m-%d')
-init_date = last_date  
+# init_date = last_date  
+init_date = "2023-03-01"
 
 # dictionary mapping rates.csv headers to months
 hdrs_to_months_dict = {
