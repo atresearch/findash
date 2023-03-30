@@ -5,7 +5,8 @@ from calc import (
     LinearLogDFSpotCurveModel,
     LinearParCurveModel,
     LinearSpotCurveModel,
-    CubicSplineSpotCurveModel
+    CubicSplineSpotCurveModel,
+    QLModel
 )
 
 from calc.util import cont_to_biannual
@@ -19,13 +20,17 @@ models = {
     'log-df': LinearLogDFSpotCurveModel(),
     'lin-par': LinearParCurveModel(),
     'lin-spot': LinearSpotCurveModel(),
-    'spline': CubicSplineSpotCurveModel()
+    'spline': CubicSplineSpotCurveModel(),
+    'ql': QLModel('2023-03-01')
 }
 
 results = pd.DataFrame(index=tenors)
 
 for model_name, model in models.items():
     model.fit(tenors,  par_rates)
-    results[model_name] = cont_to_biannual(model.spot_rates(tenors))
+    if model_name == 'ql':
+        results[model_name] = model.spot_rates(tenors)
+    else:
+        results[model_name] = cont_to_biannual(model.spot_rates(tenors))
 
 print(results)

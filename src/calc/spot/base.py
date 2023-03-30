@@ -12,15 +12,15 @@ class BaseSpotCurveModel(ABC):
     @abstractmethod
     def get_params(self):
         pass
-    
+
     @abstractmethod
     def set_params(self, params):
         pass
-    
+
     @abstractmethod
     def spot_rates(self, tenors):
         pass
-    
+
     def fit_error(self, params, tenors, par_rates, tol=1E-2):
         self.set_params(params)
         bond_prices = [self.bond_price(tenor, coupon) for tenor, coupon in zip(tenors, par_rates)]
@@ -29,7 +29,7 @@ class BaseSpotCurveModel(ABC):
         if rmse < tol:
             rmse = 0.0
         return rmse
-    
+
     def fit(self, tenors, par_rates):
         self.init_param(tenors, par_rates)
         ans = minimize(self.fit_error, self.get_params(), (tenors, par_rates), tol=1E-2)
@@ -44,8 +44,8 @@ class BaseSpotCurveModel(ABC):
         ans = np.diff(rt) / np.diff(tenors)
         return np.insert(ans, 0, r[0])
 
-    def bond_price(self, tenor: float, coupon: float) -> float:
-        
+    def bond_price(self, tenor, coupon):
+
         cashflow_times = np.arange(tenor, 0, -6)[::-1]
 
         # the size of the cashflows
@@ -57,10 +57,9 @@ class BaseSpotCurveModel(ABC):
 
         # clean price (without accruel)
         bond_clean_price = np.sum(cashflow_amounts * cashflow_discount_factors)
-        
+
         # Accruel
         time_since_last_coupon = (6 - tenor) % 6
         accruel = (time_since_last_coupon / 6) * (coupon / 2)
-        
         bond_dirty_price = bond_clean_price - accruel
         return bond_dirty_price

@@ -20,7 +20,11 @@ class CubicSplineSpotCurveModel(BaseSpotCurveModel):
     
     def set_params(self, params):
         self.y = params
-        self.model = interpolate.CubicSpline(self.x, self.y, bc_type=self.bc_type)
+        self.model = interpolate.CubicSpline(
+            self.x, 
+            self.y, 
+            bc_type=self.bc_type
+        )
 
     def spot_rates(self, tenors):
         return self.model(tenors)
