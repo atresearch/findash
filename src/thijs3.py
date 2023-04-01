@@ -6,6 +6,7 @@ from calc import (
     LinearParCurveModel,
     LinearSpotCurveModel,
     CubicSplineSpotCurveModel,
+    MonoCubicSplineSpotCurveModel,
     QLModel
 )
 
@@ -17,10 +18,11 @@ par_rates = 0.01 * np.array([4.67, 4.82, 4.90, 5.02, 5.20, 5.06, 4.89, 4.61, 4.2
 
 
 models = {
-    'log-df': LinearLogDFSpotCurveModel(),
+    #'log-df': LinearLogDFSpotCurveModel(),
     'lin-par': LinearParCurveModel(),
-    'lin-spot': LinearSpotCurveModel(),
-    'spline': CubicSplineSpotCurveModel(),
+    #'lin-spot': LinearSpotCurveModel(),
+    'spline': CubicSplineSpotCurveModel(bc_type=('natural', 'natural')),
+    'monosp': MonoCubicSplineSpotCurveModel(),
     'ql': QLModel('2023-03-01')
 }
 
@@ -29,8 +31,12 @@ results = pd.DataFrame(index=tenors)
 for model_name, model in models.items():
     model.fit(tenors,  par_rates)
     if model_name == 'ql':
-        results[model_name] = model.spot_rates(tenors)
+        results[model_name] = 100*np.array(model.spot_rates(tenors))
     else:
-        results[model_name] = cont_to_biannual(model.spot_rates(tenors))
+        results[model_name] = 100*cont_to_biannual(model.spot_rates(tenors))
 
-print(results)
+results['err x100'] = 100*(results['monosp'] - results['ql'])
+
+with pd.option_context('display.float_format', '{:0.4f}'.format):
+    print(results)
+

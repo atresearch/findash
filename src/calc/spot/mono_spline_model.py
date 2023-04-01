@@ -3,7 +3,7 @@ from calc.spot.base import BaseSpotCurveModel
 from scipy import interpolate  
 
 
-class CubicSplineSpotCurveModel(BaseSpotCurveModel):
+class MonoCubicSplineSpotCurveModel(BaseSpotCurveModel):
     def __init__(self, bc_type=('natural', 'natural')):
         self.bc_type = bc_type
         self.model = None
@@ -20,10 +20,10 @@ class CubicSplineSpotCurveModel(BaseSpotCurveModel):
     
     def set_params(self, params):
         self.y = params
-        self.model = interpolate.CubicSpline(
+        self.model = interpolate.PchipInterpolator(
             self.x,
             self.y,
-            bc_type=self.bc_type
+            extrapolate=True
         )
 
     def spot_rates(self, tenors):
