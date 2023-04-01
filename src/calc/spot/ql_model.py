@@ -4,6 +4,7 @@ from datetime import datetime
 
 debug = False
 
+
 def make_ql_date(calc_date_str):
     d = datetime.strptime(calc_date_str, '%Y-%m-%d')
     return ql.Date(d.day, d.month, d.year)

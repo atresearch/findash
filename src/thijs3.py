@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from datetime import datetime
 
 from calc import (
     LinearLogDFSpotCurveModel,
@@ -29,7 +30,11 @@ models = {
 results = pd.DataFrame(index=tenors)
 
 for model_name, model in models.items():
+    start_time = datetime.now()
     model.fit(tenors,  par_rates)
+    end_time = datetime.now()
+    print(f'{model_name} fitting Duration: {(end_time - start_time)}')
+
     if model_name == 'ql':
         results[model_name] = 100*np.array(model.spot_rates(tenors))
     else:
