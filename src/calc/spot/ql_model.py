@@ -11,9 +11,10 @@ def make_ql_date(calc_date_str):
 
 
 class QLModel(BaseSpotCurveModel):
-    def __init__(self, calc_date_str):
+    def __init__(self, calc_date_str, simplified=True):
         self.yieldcurve = None
         self.calc_date = make_ql_date(calc_date_str)
+        self.simplified = simplified
 
     def init_param(self, tenors, par_rates):
         pass
@@ -30,19 +31,19 @@ class QLModel(BaseSpotCurveModel):
         ql.Settings.instance().evaluationDate = self.calc_date
 
         # Conventions
-        # calendar = ql.UnitedStates(ql.UnitedStates.GovernmentBond)
-        calendar = ql.NullCalendar()
+        if self.simplified:
+            calendar = ql.NullCalendar()
+            day_count = ql.SimpleDayCounter()
+            bussiness_convention = ql.Unadjusted
+        else:
+            calendar = ql.UnitedStates(ql.UnitedStates.GovernmentBond)
+            day_count = ql.ActualActual(ql.ActualActual.ISMA)
+            bussiness_convention = ql.Following
 
-        bussiness_convention = ql.Unadjusted
-
-        # day_count = ql.ActualActual(ql.ActualActual.Bond)
-        day_count = ql.SimpleDayCounter()
-
-        end_of_month = False
         settlement_days = 0
+        end_of_month = False 
         face_amount = 100
         coupon_frequency = ql.Period(ql.Semiannual)
-        settlement_days = 0
 
         # create helpers from fixed rate bonds
         helpers = []

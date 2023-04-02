@@ -35,7 +35,7 @@ class BaseSpotCurveModel(ABC):
             self.fit_error, 
             self.get_params(),
             (tenors, par_rates),
-            tol=1E-5,
+            tol=1E-6,
             method='BFGS',
             options={'disp': debug}
         )
@@ -69,11 +69,11 @@ class BaseSpotCurveModel(ABC):
         cashflow_discount_factors = self.discount_factors(cashflow_times)
 
         # clean price (without accruel)
-        bond_clean_price = np.sum(cashflow_amounts * cashflow_discount_factors)
-        return bond_clean_price
+        bond_dirty_price = np.sum(cashflow_amounts * cashflow_discount_factors)
+        return bond_dirty_price
         
         # Accruel
         time_since_last_coupon = (6 - tenor) % 6
         accruel = (time_since_last_coupon / 6) * (coupon / 2)
-        bond_dirty_price = bond_clean_price - accruel
-        return bond_dirty_price
+        bond_clean_price = bond_dirty_price - accruel
+        return bond_clean_price

@@ -24,7 +24,8 @@ models = {
     #'lin-spot': LinearSpotCurveModel(),
     'spline': CubicSplineSpotCurveModel(bc_type=('natural', 'natural')),
     'monosp': MonoCubicSplineSpotCurveModel(),
-    'ql': QLModel('2023-03-01')
+    'ql': QLModel('2023-03-01'),
+    'ql2': QLModel('2023-03-01', simplified=False)
 }
 
 results = pd.DataFrame(index=tenors)
@@ -35,12 +36,12 @@ for model_name, model in models.items():
     end_time = datetime.now()
     print(f'{model_name} fitting Duration: {(end_time - start_time)}')
 
-    if model_name == 'ql':
+    if model_name[:2] == 'ql':
         results[model_name] = 100*np.array(model.spot_rates(tenors))
     else:
         results[model_name] = 100*cont_to_biannual(model.spot_rates(tenors))
 
-results['err x100'] = 100*(results['monosp'] - results['ql'])
+#results['err x100'] = 100*(results['monosp'] - results['ql'])
 
 with pd.option_context('display.float_format', '{:0.4f}'.format):
     print(results)
