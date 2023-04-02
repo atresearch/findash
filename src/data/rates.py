@@ -1,4 +1,5 @@
 import pandas as pd
+from data.storage_backend import TextStreamProvider
 
 # A helper dictionafry for looking up the 'period sizes'
 period_years = {
@@ -14,8 +15,8 @@ def tenor_name_to_year(tenor_name):
     return year
 
 
-def load_rates(path):
-    df = pd.read_csv(path, parse_dates=["Date"]).set_index("Date")
+def load_rates(stream: TextStreamProvider) -> pd.DataFrame:
+    df = pd.read_csv(stream, parse_dates=["Date"]).set_index("Date")
     return df
 
 

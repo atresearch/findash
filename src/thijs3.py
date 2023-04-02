@@ -20,7 +20,7 @@ par_rates = 0.01 * np.array([4.67, 4.82, 4.90, 5.02, 5.20, 5.06, 4.89, 4.61, 4.2
 
 models = {
     #'log-df': LinearLogDFSpotCurveModel(),
-    'lin-par': LinearParCurveModel(),
+    #'lin-par': LinearParCurveModel(),
     #'lin-spot': LinearSpotCurveModel(),
     'spline': CubicSplineSpotCurveModel(bc_type=('natural', 'natural')),
     'monosp': MonoCubicSplineSpotCurveModel(),
@@ -28,7 +28,8 @@ models = {
     'ql2': QLModel('2023-03-01', simplified=False)
 }
 
-results = pd.DataFrame(index=tenors)
+new_tenors = [1,2,3,4,5,6,7,8,9,10,11,12,18,24,30,36]
+results = pd.DataFrame(index=new_tenors)
 
 for model_name, model in models.items():
     start_time = datetime.now()
@@ -37,9 +38,9 @@ for model_name, model in models.items():
     print(f'{model_name} fitting Duration: {(end_time - start_time)}')
 
     if model_name[:2] == 'ql':
-        results[model_name] = 100*np.array(model.spot_rates(tenors))
+        results[model_name] = 100*np.array(model.spot_rates(new_tenors))
     else:
-        results[model_name] = 100*cont_to_biannual(model.spot_rates(tenors))
+        results[model_name] = 100*cont_to_biannual(model.spot_rates(new_tenors))
 
 #results['err x100'] = 100*(results['monosp'] - results['ql'])
 
