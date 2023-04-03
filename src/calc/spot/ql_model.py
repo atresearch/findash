@@ -43,7 +43,7 @@ class QLModel(BaseSpotCurveModel):
 
         self.day_count = day_count
         settlement_days = 0
-        end_of_month = False 
+        end_of_month = False
         face_amount = 100
         coupon_frequency = ql.Period(ql.Semiannual)
 
