@@ -5,9 +5,9 @@ import QuantLib as ql
 # -------------------------------------------------------------------------
 # Quantlib Settings
 # -------------------------------------------------------------------------
-calendar = ql.UnitedStates(ql.UnitedStates.GovernmentBond)
-day_count = ql.ActualActual(ql.ActualActual.ISMA)
-bussiness_convention = ql.Following
+calendar = ql.NullCalendar()
+day_count = ql.SimpleDayCounter()
+bussiness_convention = ql.Unadjusted
 settlement_days = 0
 end_of_month = False
 face_amount = 100
