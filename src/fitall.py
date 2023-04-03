@@ -95,15 +95,13 @@ for date, quotes in df.iterrows():
     # Lookup values on the curve
     spots = []
     for m in num_months:
-        yrs = m / 12
+        termination_date = calc_date + ql.Period(m, ql.Months)
+        year_fraction = day_count.yearFraction(calc_date, termination_date)
         try:
-            zero_rate = yieldcurve.zeroRate(yrs, ql.Compounded, ql.Semiannual).rate()
+            zero_rate = yieldcurve.zeroRate(year_fraction, ql.Compounded, ql.Semiannual).rate()
+            spots.append(round(zero_rate * 100, 4))
         except RuntimeError:
-            print(f'skipped m={m}')
-            continue
-
-        spots.append(round(zero_rate * 100, 4))
-        # sprint(f'm = {m}, spot = {zero_rate}')
+            spots.append(np.nan)
 
     spot_curve = dict(zip(df.columns, spots))
     spot_curve['Date'] = date

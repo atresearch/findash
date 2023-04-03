@@ -24,8 +24,7 @@ models = {
     #'lin-spot': LinearSpotCurveModel(),
     'spline': CubicSplineSpotCurveModel(bc_type=('natural', 'natural')),
     'monosp': MonoCubicSplineSpotCurveModel(),
-    'ql': QLModel('2023-03-01'),
-    'ql2': QLModel('2023-03-01', simplified=False)
+    'ql': QLModel('2023-03-01')
 }
 
 new_tenors = [1,2,3,4,5,6,7,8,9,10,11,12,18,24,30,36]

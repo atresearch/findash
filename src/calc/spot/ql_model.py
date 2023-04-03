@@ -1,7 +1,7 @@
 from calc.spot.base import BaseSpotCurveModel
 import QuantLib as ql
 from datetime import datetime
-
+import numpy as np
 debug = False
 
 
@@ -15,6 +15,7 @@ class QLModel(BaseSpotCurveModel):
         self.yieldcurve = None
         self.calc_date = make_ql_date(calc_date_str)
         self.simplified = simplified
+        self.day_count = None
 
     def init_param(self, tenors, par_rates):
         pass
@@ -40,6 +41,7 @@ class QLModel(BaseSpotCurveModel):
             day_count = ql.ActualActual(ql.ActualActual.ISMA)
             bussiness_convention = ql.Following
 
+        self.day_count = day_count
         settlement_days = 0
         end_of_month = False 
         face_amount = 100
@@ -88,6 +90,14 @@ class QLModel(BaseSpotCurveModel):
     def spot_rates(self, tenors):
         spots = []
         for m in tenors:
-            zero_rate = self.yieldcurve.zeroRate(int(m)/12, ql.Compounded, ql.Semiannual).rate()
+            termination_date = self.calc_date + ql.Period(m, ql.Months)
+            year_fraction = self.day_count.yearFraction(self.calc_date, termination_date)
+
+            try:
+                zero_rate = self.yieldcurve.zeroRate(year_fraction, ql.Compounded, ql.Semiannual).rate()
+            except RuntimeError:
+                zero_rate = np.nan
+                continue
+
             spots.append(zero_rate)
         return spots
