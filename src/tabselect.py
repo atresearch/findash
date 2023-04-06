@@ -1,4 +1,5 @@
 # 4/6/2023 alan: created
+# 4/6/2023 alan: now table display is from latest date to earliest
 
 from dash import Dash, dcc, html, Input, Output, dash_table, no_update  
 import plotly.graph_objects as go
@@ -68,11 +69,18 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = Dash(__name__, external_stylesheets=external_stylesheets)
 
 
-dff = build_df(init_date)  # filtered df from init_date to last_date
+df0 = build_df(init_date)  # filtered df from init_date to last_date
+dff = df0[::-1]
 dff["id"] = dff.index
+# print(dff)
+last_id = len(dff)-1
+# print("last_id=",last_id)
+
+
 columns = ['Date', '1 Mo', '2 Mo', '3 Mo', '4 Mo', '6 Mo', '1 Yr',
                '2 Yr', '3 Yr', '5 Yr', '7 Yr', '10 Yr', '20 Yr', '30 Yr']
-initial_active_cell = {"row": 0, "column": 0, "column_id": "Date", "row_id": 0}
+# initial_active_cell = {"row": 0, "column": 0, "column_id": "Date", "row_id": 0}
+initial_active_cell = {"row": last_id, "column": 0, "column_id": "Date", "row_id": last_id}
 
 row = initial_active_cell["row_id"]
 initial_date = dff.at[row, "Date"]
