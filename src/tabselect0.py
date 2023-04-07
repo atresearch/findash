@@ -2,6 +2,7 @@
 # 4/6/2023 alan: now table display is from latest date to earliest
 # 4/7/2023 alan: still problems with reverse date order table; here 2023-03-14 is highlighted(good),
 #           but seems to now require the initial chart to show both the first and last dates.  
+# 4/7/2023  alan: finally fixed the problem with reverse date order
 
 from dash import Dash, dcc, html, Input, Output, dash_table, no_update  
 import plotly.graph_objects as go
@@ -82,7 +83,7 @@ print(dff)
 
 columns = ['Date', '1 Mo', '2 Mo', '3 Mo', '4 Mo', '6 Mo', '1 Yr',
                '2 Yr', '3 Yr', '5 Yr', '7 Yr', '10 Yr', '20 Yr', '30 Yr']
-initial_active_cell = {"row": 0, "column": 0, "column_id": "Date", "row_id": 0}
+initial_active_cell = {"row": 0, "column": 0, "column_id": "Date", "row_id": len(dff)-1}
 
 row = initial_active_cell["row_id"]
 initial_date = dff.at[len(dff)-1, "Date"]    # this is a datetime object!
@@ -108,7 +109,7 @@ app.layout = html.Div(
                     },
                     style_data_conditional=[                
                         {
-                           "if": {"state": "selected"},        # 'active' | 'selected'  
+                           "if": {"state": "active"},        # 'active' | 'selected'  
                            "backgroundColor": "orange",
                            "border": "1px solid black",
                         }
