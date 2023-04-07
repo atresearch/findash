@@ -15,7 +15,7 @@ import os
 
 
 # max number of charts at one time
-MAX_CHARTS = 5
+MAX_CHARTS = 8
 INIT = 0
 
 fp = __file__
@@ -163,8 +163,8 @@ def cell_clicked(active_cell):
     fig = go.Figure([go.Scatter(x=df_row['YEARS'], y=df_row['YIELD'], 
                                 connectgaps=True, name=date.strftime('%Y-%m-%d'))])  
     fig.update_layout(xaxis_title="YEARS", yaxis_title="PAR YIELD")
-    # fig.update_layout(legend=dict(
-    #    orientation="h", entrywidth=70, yanchor="bottom", y=1.02,xanchor="right",x=1))       
+    fig.update_layout(legend=dict(
+        orientation="h", entrywidth=70, yanchor="bottom", y=1.02,xanchor="right",x=1))       
                                   
     if len(selected_dates) > 1:   # graph the other recently selected dates
         remainder_dates = selected_dates[:-1]
