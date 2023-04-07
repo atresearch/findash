@@ -70,8 +70,8 @@ app = Dash(__name__, external_stylesheets=external_stylesheets)
 
 
 df0 = build_df(init_date)  # filtered df from init_date to last_date
+df0["id"] = df0.index
 dff = df0[::-1]
-dff["id"] = dff.index
 # print(dff)
 last_id = len(dff)-1
 # print("last_id=",last_id)
